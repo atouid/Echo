@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Tutor Dashboard</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        /* Base and existing styles... */
+
+        header {
+            background-color: #003d7a;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .header-logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background-color: white;
+            color: #003d7a;
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: inline-block;
+        }
+
+        b {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            /* Adjust as needed */
+        }
+
+        .name-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            min-width: 100px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            top: 100%;
+            /* Position it below the text */
+            /* Align it to the left edge of the 'name-dropdown' */
+        }
+
+        .dropdown-menu a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #eee;
+        }
+
+        /* Dashboard layout */
+        /* Dashboard layout adjustments */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            /* Three equal columns */
+            grid-template-rows: auto auto;
+            /* Two rows */
+            gap: 20px;
+        }
+
+        .my-classes {
+            grid-column: 1 / 2;
+            /* Occupies the first third of the row */
+            grid-row: 1;
+        }
+
+        .chat-tutors {
+            grid-column: 2 / 3;
+            /* Occupies the second third of the row */
+            grid-row: 1;
+        }
+
+        .pomodoro-timer {
+            grid-column: 3 / 4;
+            /* Occupies the last third of the row */
+            grid-row: 1;
+            /* Positioned in the first row */
+        }
+
+        /* Adjust the placements of the second-row elements */
+        .calendar,
+        .slack-connection,
+        .spotify-player {
+            grid-column: span 1;
+            /* Each takes up one third of the width */
+            grid-row: 2;
+            /* Positioned in the second row */
+        }
+
+        /* Other styles remain the same... */
+
+
+
+        /* Adjust the Spotify player height */
+        .spotify-player iframe {
+            height: 500px;
+            /* Increased height */
+        }
+
+
+        .slack-connection a {
+            display: inline-block;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-radius: 15px;
+        }
+
+        .slack-connection a:hover {
+            background-color: #43a047;
+        }
+
+        /* Card styles */
+        .card {
+            background-color: rgba(255, 255, 255, 0.5);
+            /* white with 80% opacity */
+            border-radius: 50px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            max-height: 200px;
+        }
+
+        /* When the details are shown, increase max-height */
+        .card.my-classes.show-details {
+            max-height: 500px;
+            /* Adjust this value based on content */
+        }
+
+        .card-header {
+            font-size: 20px;
+            color: #003d7a;
+            /* Header color */
+            margin-bottom: 15px;
+            text-align: center;
+            /* Align text to the right */
+        }
+
+
+        .card-contentslack {
+            padding-top: 30px;
+        }
+
+        .card-content,
+        .calendar-content {
+            color: #666;
+        }
+
+        .tutor-buttons,
+        .calendar-events {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+
+        .tutor-button,
+        .calendar-event,
+        .toggle-button {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            width: 100%;
+            background-color: #003d7a;
+            /* Button color */
+            transition: background-color 0.3s;
+        }
+
+        .tutor-button:hover,
+        .calendar-event:hover,
+        .toggle-button:hover {
+            background-color: #003d7a;
+            color: white;
+            /* Darker on hover */
+        }
+
+        .toggle-button {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Pomodoro Timer styles */
+        /* Pomodoro Timer styles */
+
+        .pomodoro-timer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Align vertically at the center */
+            gap: 5px;
+            /* Reduced gap between items */
+            height: auto;
+            /* Adjust height to content */
+            overflow: hidden;
+        }
+
+        .timer-display {
+            font-size: 30px;
+            font-weight: bold;
+            color: #d9534f;
+            margin: 0;
+            /* Remove any default margin */
+            width: 100%;
+            /* Full width of the container */
+            text-align: center;
+            /* Center text horizontally */
+            padding: 5px 0;
+            /* Padding for spacing, adjust as needed */
+        }
+
+        .pomodoro-timer button {
+            background-color: #4caf50;
+            color: white;
+            padding: 13px 15px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .pomodoro-timer button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            border-radius: 15px;
+        }
+
+        .pomodoro-timer button:hover:not(:disabled) {
+            background-color: #43a047;
+            border-radius: 15px;
+        }
+
+        .spotify-player {
+            /* grid-column: 3; Place in the third column */
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            /* Optional: Add transparency similar to other cards */
+        }
+
+        .spotify-container {
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            border-radius: 20px;
+            /* Rounded corners */
+            /* Optional: set a fixed height to ensure the scroll works */
+            height: 380px;
+            /* Adjust as needed */
+        }
+
+        .spotify-player iframe {
+            width: 100%;
+            height: 800px;
+            /* Adjust this value as needed */
+            border: none;
+            border-radius: 20px;
+        }
+
+        .center-text {
+            text-align: center;
+            /* Center align the text */
+
+        }
+
+        .center-content {
+            text-align: center;
+            /* Center align the content */
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #003d7a;
+            color: white;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .header-title {
+            font-size: 40px;
+            color: white;
+            text-align: center;
+            flex-grow: 1;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        #backgroundVideo {
+            position: fixed;
+            /* Fixed position to cover the whole page */
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            /* Keep it behind all other content */
+            background-size: cover;
+            /* Ensure it covers the entire viewport */
+        }
+
+        /* You may want to add styles to other elements to ensure they are visible over the video */
+        /* body, .card, .header-logo, .profile, .header-title {
+    color: white; /* Example of changing text color for visibility 
+} */
+        /* .spotify-player iframe {
+    width: 100%;
+    height: 900px; /* Set a specific height for the iframe 
+    border: none;
+    border-radius: 10px;
+} */
+
+
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                /* Single column layout on smaller screens */
+            }
+
+            .my-classes,
+            .chat-tutors,
+            .calendar,
+            .spotify-player,
+            .pomodoro-timer {
+                grid-column: 1;
+                /* All items span the full width of the grid */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <video autoplay muted loop id="backgroundVideo">
+        <source src="back.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    <header>
+        <div class="header-logo">ECHO</div>
+        <div class="header-title">Welcome Dana</div>
+        <div class="profile">
+            <img src="profile_logo.png" alt="Profile">
+            <div class="name-dropdown" onclick="toggleDropdown()">
+                <span>atouid</span>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#">Settings</a>
+                    <a href="#">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="dashboard">
+        <!-- My Classes card -->
+        <div class="card my-classes">
+            <div class="card-header"><b>My Classes</b></div>
+            <div class="card-content">
+                <p class="center-text">You have <strong>3</strong> classes today.</p>
+                <button class="toggle-button" onclick="toggleDetails(this)">Show Details</button>
+                <div class="details" style="display:none">
+                    <p>Math - 10:00 AM</p>
+                    <p>Chemistry - 1:00 PM</p>
+                    <p>Physics - 3:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar card -->
+        <div class="card calendar">
+            <div class="card-header"><b>Calendar</b></div>
+            <div class="calendar-content">
+                <div class="calendar-events">
+                    <button class="calendar-event">Math Assignment - Sep 20</button>
+                    <button class="calendar-event chemistry">Chemistry Lab - Sep 22</button>
+                    <button class="calendar-event physics">Physics Project - Sep 25</button>
+                    <!-- More events can be added here -->
+                </div>
+            </div>
+        </div>
+        <div class="card slack-connection">
+            <div class="card-header"><b>Connect to Slack</b></div>
+            <div class="card-contentslack center-content">
+                <img src="slack_logo.png" alt="Slack Logo"
+                    style="height: 40px; vertical-align: middle; margin-right: 10px;">
+                <a
+                    href="https://slack.com/oauth/v2/authorize?client_id=6132972965812.6211237078838&scope=chat:write&user_scope=">Connect
+                    to Slack</a>
+            </div>
+        </div>
+
+        <!-- Chat with Your Tutors card -->
+        <div class="card chat-tutors">
+            <div class="card-header"><b>Chat with Your Tutors</b></div>
+            <div class="card-content">
+                <div class="tutor-buttons">
+                    <button onclick="askTutor()">Ask</button>
+                    <!-- <button class="tutor-button" onclick="openTutorChat('Math')">Math Tutor</button>
+                    <button class="tutor-button" onclick="openTutorChat('Chemistry')">Chemistry Tutor</button>
+                    <button class="tutor-button" onclick="openTutorChat('Physics')">Physics Tutor</button> -->
+                    <!-- More buttons can be added here -->
+                </div>
+            </div>
+        </div>
+        <!-- Add this inside your HTML where you want the tutor interface -->
+
+
+<script>
+    function askTutor() {
+        const question = document.getElementById('tutor-question').value;
+        fetch('/ask-tutor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ question: question })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tutor-response').innerText = data.response;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+        <!-- Spotify Mini Player card -->
+        <!-- Spotify Mini Player card -->
+        <div class="card spotify-player">
+            <div class="card-header">
+                <img src="spotify_logo.webp" alt="Spotify Logo"
+                    style="height: 45px; vertical-align: middle; margin-right: 10px;">
+                <b>Spotify Mini Player</b>
+            </div>
+            <div class="spotify-container">
+                <!-- Spotify iframe embed code -->
+                <iframe title="Spotify Embed: Recommendation Playlist"
+                    src="https://open.spotify.com/embed/playlist/5butyIagISF7l7R0o8FDUM?utm_source=generator&theme=0"
+                    frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"></iframe>
+            </div>
+        </div>
+
+        <div class="card pomodoro-timer">
+            <div class="card-header"><b>Pomodoro Timer</b></div>
+            <div class="card-content" id="pomodoro-timer-content">
+                <div class="timer-display" id="timer-display">25:00</div>
+                <button id="start-timer" onclick="startTimer()">Start</button>
+                <button id="pause-timer" onclick="pauseTimer()" disabled>Pause</button>
+                <button id="reset-timer" onclick="resetTimer()" disabled>Reset</button>
+            </div>
+        </div>
+        <footer>
+            Echo &copy; 2023
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript for interactive elements
+        function toggleDropdown() {
+            var dropdown = document.getElementById("dropdownMenu");
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.profile, .profile *')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function toggleDetails(button) {
+            var details = button.nextElementSibling;
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                button.textContent = 'Hide Details';
+            } else {
+                details.style.display = 'none';
+                button.textContent = 'Show Details';
+            }
+        }
+
+        function openTutorChat(subject) {
+            window.open('https://chat.openai.com/', '_blank');
+        }
+        let timer;
+        let isTimerRunning = false;
+        let timeRemaining = 25 * 60; // 25 minutes in seconds
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer-display').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function startTimer() {
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                document.getElementById('pause-timer').disabled = false;
+                document.getElementById('reset-timer').disabled = false;
+                timer = setInterval(() => {
+                    if (timeRemaining > 0) {
+                        timeRemaining--;
+                        updateDisplay();
+                    } else {
+                        resetTimer();
+                        alert('Pomodoro finished!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+            isTimerRunning = false;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeRemaining = 25 * 60;
+            isTimerRunning = false;
+            updateDisplay();
+            document.getElementById('pause-timer').disabled = true;
+            document.getElementById('reset-timer').disabled = true;
+        }
+        function toggleDetails(button) {
+            var details = button.nextElementSibling;
+            var card = button.closest('.card');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                card.classList.add('show-details'); // Add class to expand
+                button.textContent = 'Hide Details';
+            } else {
+                details.style.display = 'none';
+                card.classList.remove('show-details'); // Remove class to collapse
+                button.textContent = 'Show Details';
+            }
+        }
+        
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/get-canvas-data')
+            .then(response => response.json())
+            .then(canvasData => {
+                const calendarElement = document.getElementById('calendar');
+                canvasData.todos.forEach(todo => {
+                    const todoElement = document.createElement('div');
+                    todoElement.innerHTML = `<strong>${todo.title}</strong> - Due: ${new Date(todo.due_at).toDateString()}`;
+                    calendarElement.appendChild(todoElement);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+</script>
+
+</body>
+
+</html>

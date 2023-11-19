@@ -1,0 +1,50 @@
+{
+    "courses": [
+        {
+            "name": "EECS 270 001 FA 2022",
+            "id": 549093
+        },
+        {
+            "name": "EECS 280 FA 2022",
+            "id": 547703
+        },
+        {
+            "name": "EECS 281 WN 2023",
+            "id": 565836
+        },
+        {
+            "name": "EECS 370 100 SP 2023",
+            "id": 598747
+        },
+        {
+            "name": "EECS 388 FA 2023",
+            "id": 619303
+        },
+        {
+            "name": "EECS 484 100 SP 2023",
+            "id": 598149
+        },
+        {
+            "name": "EECS 497 001 FA 2023",
+            "id": 620665
+        },
+        {
+            "name": "Engineering Transfer Orientation Fall 2022",
+            "id": 536098
+        },
+        {
+            "name": "Unknown Course Name",
+            "id": 511853
+        },
+        {
+            "name": "MATH 214 008 FA 2022",
+            "id": 553502
+        }
+    ],
+    "todos": [
+        {
+            "title": "Digital Forensics",
+            "due_at": "2023-11-21T04:59:59Z"
+        }
+    ]
+}
